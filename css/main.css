@@ -1,3 +1,5 @@
+@branding-color: #d6b161;
+
 * {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -73,6 +75,7 @@ li {
 
 #logo {
 	float: left; /*讓LOGO靠左*/
+	padding-top: 20px; 
 }
 
 #nav {
@@ -93,7 +96,7 @@ li {
 }
 
 #nav .active a {
-	color: #d6b161;
+	color: @branding-color;
 }
 
 .boundary:after { /*在boundary之後...*/
@@ -328,7 +331,7 @@ li {
 }
 
 .outlet .map a{
-	color: #d6b161;
+	color: @branding-color;
 	text-decoration: none;
 	text-transform: uppercase;
 }
