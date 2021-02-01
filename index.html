@@ -1,0 +1,231 @@
+<head>
+	<style>
+
+		body {
+			margin: 0px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: black;
+		}
+
+		#bg {
+			background-image: linear-gradient(90deg, hsla(0,0%,100%,.5) 1px,transparent 0),
+			linear-gradient(180deg, hsla(0,0%,100%,.5) 1px,transparent 0);
+			background-size: 4vw 4vw;
+			bottom: 0;
+			left: 0;
+			position: absolute;
+			right: 0;
+			top: 0;
+		}
+
+		#top_box {
+			width: 100%;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+		}
+
+		#logo {
+			float: left;
+			position: relative;
+			top: 20px;
+			left: 50%;
+			font-family: 'Julietta Messie';
+			color: white;
+			font-size: 2.5em;
+			transform: rotate(-10deg) translateX(-50%);
+		}
+
+		#menu {
+			width: 100%;
+			height: 100vh;
+			font-family: arial;
+			color: white;
+			font-size: 12px;
+			letter-spacing: 10px;
+		}
+
+		#menu1 {
+			position: absolute;
+			top: 350px;
+			left: 20px;
+			transform: rotate(-90deg);
+		}
+
+		#menu2 {
+			position: absolute;
+			top: 350px;
+			right: 20px;
+			transform: rotate(90deg);
+		}
+
+		#menu3 {
+			position: absolute;
+			left: 46%;
+			bottom: 30px;
+		}
+
+		#word {
+			position: relative;
+			left: 11%;
+			z-index: 1;
+			font-family: sans-serif;
+			font-size: 20px;
+			color: gray;
+		}
+
+		#word:before {
+			content: '';
+			background-image: url(images/Stone.png);
+			background-size: 100%;
+			background-repeat: no-repeat;
+			width: 200px;
+			height: 400px;
+			position: absolute;
+			z-index: 1;
+			left: -110px;
+			top: -150px;
+			animation:anime1 4s ease-in-out infinite;
+		}
+
+		@keyframes anime1 {
+			0% {
+				top: -130px;
+			}
+			50% {
+				top: -170px;
+			}
+			100% {
+				top: -130px;
+			}
+		}
+
+		span {
+			position: absolute;
+			z-index: 1;
+			top: 0;
+			left: 0;
+		}
+
+		#card {
+			height: 500px;
+			width: 350px;
+			position: relative;
+			top: 30px;
+			overflow: hidden;
+		}
+
+		#card:before {
+			content: '';
+			position: absolute;
+			left: 0px;
+			top: 100%;
+			width: 100%;
+			height: 100%;
+			background-color: white;
+			animation: anime2 .5s linear forwards;
+		}
+
+		@keyframes anime2 {
+			from {
+				top: 100%;
+			}
+			to {
+				top: 0%;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="bg"></div>
+
+	<div id="top_box">
+		<div id="logo">
+			Stollen Stone
+		</div>
+
+		<div id="menu">
+			<div id="menu1">WORK</div>
+			<div id="menu2">ABOUT</div>
+			<div id="menu3">CONTACT</div>
+		</div>
+	</div>
+
+	<div id="word">STOLLEN STONE</div>
+	<div id="card"></div>
+</body>
+
+<script>
+	let time = 0;
+	let x = 0;
+
+	const opt = {
+		radius: 150,
+		radiusY: 0.4,
+		maxSpeed: 0.05,
+		maxRotation: 50,
+		minOpacity: 0.3,
+		spacer: "-"
+	};
+
+	const scale = (a,b,c,d,e) => {
+		return ((a-b) * (e-d)) / (c-b) + d;
+	};
+
+	const lerp = (v0,v1,t) => {
+		return v0 * (1-t) + v1 * t;
+	};
+
+	const createInvaders = () => {
+		const word = document.querySelector("#word");
+		const Letters = word.innerHTML.replace(/\s/g, opt.spacer).split("").reverse();
+		word.innerHTML = "";
+		Letters.forEach((i) => {
+			const l = document.createElement("span");
+			l.innerHTML = i;
+			word.appendChild(l);
+		});
+	};
+
+	createInvaders();
+
+	const letter = document.querySelectorAll("#word span");
+
+	const animate = () => {
+		if(!letter) return;
+
+		x = lerp(x,0.65,0.1);
+		const rotation = -opt.maxRotation + x * opt.maxRotation * 2;
+		const speed = -opt.maxSpeed + x * opt.maxSpeed * 2;
+		const modY = 1 + x * -2;
+
+		time -= speed;
+
+		letter.forEach((i,ind) => {
+			const theta = 1 - ind / letter.length;
+			const x = opt.radius * Math.sin(time + theta * Math.PI *2);
+			const y = opt.radius * opt.radiusY * Math.cos(modY + time + theta * Math.PI * 2);
+			const s = scale(
+				y,
+				-opt.radius * opt.radiusY,
+				opt.radius * opt.radiusY,
+				opt.minOpacity,
+				1
+			);
+
+			Object.assign(i.style, {
+				zIndex : Math.min(2, Math.max(-2, Math.ceil(y))),
+				filter:`blur(${4 - 5 * s}px)`,
+				opacity: s,
+				transform: `translate3d(${x}px, ${y}px,0) rotate(${rotation}deg)`
+			});
+		});
+
+		requestAnimationFrame(animate);
+	};
+
+	animate();
+</script>
+</html>
